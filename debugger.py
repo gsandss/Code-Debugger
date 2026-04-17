@@ -1,3 +1,4 @@
+import sys
 import subprocess
 import requests
 import tkinter as tk
@@ -7,61 +8,94 @@ from pygments import lex
 from pygments.lexers import PythonLexer
 from pygments.token import Token
 
-# LM Studio API URL
-LM_STUDIO_API = "http://127.0.0.1:5000/v1/completions"
+LM_STUDIO_API = "http://127.0.0.1:1234/v1/chat/completions"
+LM_STUDIO_MODEL = "essentialai/rnj-1" 
 
-def apply_syntax_highlighting(event):
+def apply_syntax_highlighting(event=None):
     code = code_input.get("1.0", "end-1c")
+
+    # clear old tags first
+    code_input.tag_remove("keyword", "1.0", tk.END)
+    code_input.tag_remove("string", "1.0", tk.END)
+    code_input.tag_remove("comment", "1.0", tk.END)
+
     code_input.mark_set("range_start", "1.0")
     for token, content in lex(code, PythonLexer()):
         code_input.mark_set("range_end", f"range_start + {len(content)}c")
+
         if token in Token.Keyword:
             code_input.tag_add("keyword", "range_start", "range_end")
         elif token in Token.Literal.String:
             code_input.tag_add("string", "range_start", "range_end")
         elif token in Token.Comment:
             code_input.tag_add("comment", "range_start", "range_end")
+
         code_input.mark_set("range_start", "range_end")
 
 def query_lm_studio(prompt):
     payload = {
-        "prompt": prompt,
-        "max_new_tokens": 150,
+        "model": LM_STUDIO_MODEL,
+        "messages": [
+            {"role": "system", "content": "You are a helpful programming assistant."},
+            {"role": "user", "content": prompt}
+        ],
+        "max_tokens": 300,
         "temperature": 0.7
     }
-    response = requests.post(LM_STUDIO_API, json=payload)
-    if response.status_code == 200:
-        return response.json()["choices"][0]["text"].strip()
-    else:
-        raise Exception(f"Error querying LM Studio: {response.status_code} - {response.text}")
+
+    response = requests.post(LM_STUDIO_API, json=payload, timeout=20)
+    response.raise_for_status()
+
+    data = response.json()
+    return data["choices"][0]["message"]["content"].strip()
 
 def analyze_error(error_message):
     prompt = (
-        "You are a programming assistant. Explain the following Python error message in simple terms "
-        "and provide suggestions to fix it:\n\n"
-        f"Error Message:\n{error_message}\n\n"
-        "Explanation and Suggestions:"
+        "Explain this Python error in simple terms and suggest how to fix it.\n\n"
+        f"{error_message}"
     )
     return query_lm_studio(prompt)
 
 def run_code(code, output_box):
     try:
         temp_file = "temp_code.py"
-        with open(temp_file, "w") as file:
+        with open(temp_file, "w", encoding="utf-8") as file:
             file.write(code)
-        result = subprocess.run(["python", temp_file], capture_output=True, text=True)
+
+        result = subprocess.run(
+            [sys.executable, temp_file],
+            capture_output=True,
+            text=True,
+            timeout=10
+        )
+
+        output_box.config(state="normal")
+        output_box.delete("1.0", tk.END)
+
         if result.returncode != 0:
             error_message = result.stderr
-            explanation = analyze_error(error_message)
-            output_box.config(state="normal")
-            output_box.insert(tk.END, f"Error:\n{error_message}\n\nAI Suggestions:\n{explanation}\n")
-            output_box.config(state="disabled")
+            try:
+                explanation = analyze_error(error_message)
+            except Exception as ai_error:
+                explanation = f"Could not get AI explanation: {ai_error}"
+
+            output_box.insert(
+                tk.END,
+                f"Error:\n{error_message}\n\nAI Suggestions:\n{explanation}\n"
+            )
         else:
-            output_box.config(state="normal")
             output_box.insert(tk.END, f"Success:\n{result.stdout}\n")
-            output_box.config(state="disabled")
+
+        output_box.config(state="disabled")
+
+    except subprocess.TimeoutExpired:
+        output_box.config(state="normal")
+        output_box.delete("1.0", tk.END)
+        output_box.insert(tk.END, "Error: Code execution timed out.\n")
+        output_box.config(state="disabled")
     except Exception as e:
         output_box.config(state="normal")
+        output_box.delete("1.0", tk.END)
         output_box.insert(tk.END, f"Unexpected Error: {e}\n")
         output_box.config(state="disabled")
 
@@ -195,10 +229,14 @@ def display_in_gui():
     def ask_question():
         code = code_input.get("1.0", tk.END).strip()
         question = question_entry.get().strip()
+
         if code and question:
             output_box.config(state="normal")
             output_box.insert(tk.END, f"\nQuestion: {question}\n")
-            answer = ask_chatbot(code, question)
+            try:
+                answer = ask_chatbot(code, question)
+            except Exception as e:
+                answer = f"Could not get answer from LM Studio: {e}"
             output_box.insert(tk.END, f"Answer: {answer}\n\n")
             output_box.config(state="disabled")
             output_box.see(tk.END)
