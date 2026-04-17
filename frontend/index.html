@@ -1,1 +1,40 @@
 <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Debugger</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="app">
+        <header class ="app-header">
+            <h1>Code Debugger</h1>
+            <p>Run Python code and get AI-powered debugging assistance</p>
+        </header>
+
+        <main class="app-main">
+            <section class="panel editor-panel">
+                <h2>Code Editor</h2>
+                <textarea id="code-input" placeholder="Write your Python code here..."></textarea>
+                
+                <div class="button-row">
+                    <button id="run-code">Run</button>
+                    <button id="clear-code">Clear</button>
+                </div>
+            </section>
+
+            <section class="panel ask-panel">
+                <h2>Ask About Your Code</h2>
+                <div class="ask-row">
+                    <input type="text" id="question-input" placeholder="Ask a question about your code...">
+                    <button id="ask-question">Ask AI</button>
+                </div>
+                <pre id="output-area" placeholder="Output and debugging information will appear here..."></pre>
+            </section>
+        </main>
+
+    </div>
+    <script src="script.js"></script>
+</body>
