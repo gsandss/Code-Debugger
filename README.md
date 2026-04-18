@@ -50,5 +50,5 @@ This application is hostest locally using LM Studio, which allows for privacy an
   ```
 ## 👨‍💻Author
 **Gavin Sands**  
-Iowa State University | Computer Science  
-Minors in Applied AI & Artificial Intelligence
+Iowa State University  
+Computer Science | Minors in Applied AI & Artificial Intelligence
