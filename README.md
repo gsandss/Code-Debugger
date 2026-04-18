@@ -48,6 +48,11 @@ This application is hostest locally using LM Studio, which allows for privacy an
   LM_STUDIO_API = "http://127.0.0.1:1234/v1/chat/completions"
   LM_MODEL = "your-model-name" // Replace With Your Models Name
   ```
+## 🔮Future Plans
+- 🕶️Enhance Visuals
+- 📁File Input & Save System
+- 🎤Voice Recording
+
 ## 👨‍💻Author
 **Gavin Sands**  
 Iowa State University  
