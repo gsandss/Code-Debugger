@@ -29,7 +29,7 @@ This application is hostest locally using LM Studio, which allows for privacy an
   cd backend
   py -m pip install -r requirements.txt
   ```
-###▶️ Run the Backend
+### ▶️Run the Backend
   ```bash
   cd backend
   py app.py
