@@ -39,10 +39,6 @@ This application is hostest locally using LM Studio, which allows for privacy an
   cd frontend
   py -m http.server 5500
   ```
-### 🌍Open The App
-  ```text
-  http://127.0.0.1:5500
-  ```
 ### 🤖LM Studio Config
   ```python
   LM_STUDIO_API = "http://127.0.0.1:1234/v1/chat/completions"
