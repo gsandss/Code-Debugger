@@ -41,7 +41,7 @@ This application is hostest locally using LM Studio, which allows for privacy an
   ```
 ### 🤖LM Studio Config
   ```python
-  LM_STUDIO_API = "http://127.0.0.1:1234/v1/chat/completions"
+  LM_STUDIO_API = "your-api" // Replace With Your Models API
   LM_MODEL = "your-model-name" // Replace With Your Models Name
   ```
 ## 🔮Future Plans
