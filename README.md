@@ -12,42 +12,38 @@ Users are able to:
 
 This application is hostest locally using LM Studio, which allows for privacy and offline capability
 
-## ⚙️Technologies
+## Technologies
 - **Frontend**: HTML, CSS, JavaScript
 - **Backend**: Python, Flask
 - **AI**: LM Studio
 
-## 🛠️Installation & Setup
+## Installation & Setup
 
-### 🚀Clone Repo
+### Clone Repo
   ```bash
   git clone https://github.com/gsandss/Code-Debugger.git
   cd Code-Debugger
   ```
-### ⚙️Install Backend Dependencies
+### Install Backend Dependencies
   ```bash
   cd backend
   py -m pip install -r requirements.txt
   ```
-### ▶️Run the Backend
+### Run the Backend
   ```bash
   cd backend
   py app.py
   ```
-### 🌐Run the Frontend
+### Run the Frontend
   ```bash
   cd frontend
   py -m http.server 5500
   ```
-### 🤖LM Studio Config
+### LM Studio Config
   ```python
   LM_STUDIO_API = "your-api" // Replace With Your Models API
   LM_MODEL = "your-model-name" // Replace With Your Models Name
   ```
-## 🔮Future Plans
-- 🕶️Enhance Visuals
-- 📁File Input & Save System
-- 🎤Voice Recording
 
 ## 👨‍💻Author
 **Gavin Sands**  
